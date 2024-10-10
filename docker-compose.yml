@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    image: leadpages_python_coding_challenge
+    environment:
+      - APP_ENV=prod
+    volumes:
+      - ./backend/app:/code/app
+    ports:
+      - 6132:6132

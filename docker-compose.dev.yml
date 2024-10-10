@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.dev
+      args:
+        options: --reload
+    image: leadpages_python_coding_challenge_dev
+    environment:
+      - DD_SHOWS_ROOT=/dd/shows
+      - APP_ENV=dev
+    volumes:
+      - ./backend/app:/code/app
+    ports:
+      - 6132:6132
