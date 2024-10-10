@@ -1,0 +1,3 @@
+import os
+
+EXTERNAL_API_SERVER_URL = os.environ["EXTERNAL_API_SERVER_URL"]

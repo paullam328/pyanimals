@@ -1,4 +1,2 @@
-from pydantic import BaseModel
-
-class BaseSchema(BaseModel):
+class BaseSchema(object):
     pass

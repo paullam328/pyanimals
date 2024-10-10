@@ -1,2 +1,0 @@
-kill $(lsof -t -i:3123)
-gunicorn -b 0.0.0.0:3123 app.main:app

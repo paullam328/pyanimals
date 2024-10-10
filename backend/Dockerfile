@@ -9,6 +9,6 @@ COPY ./backend /code
 COPY requirements.txt /code/requirements.txt
 RUN pip3 install -r requirements.txt
 
-EXPOSE 6132
+EXPOSE 8000
 
-CMD ["gunicorn", "-b", "0.0.0.0:6132" ."app.main:app"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,14 +1,15 @@
-FROM python:3.13.0-alpine3.20
+FROM python:3.12-alpine
 
 WORKDIR /code
 
 # For development purposes
 COPY restart /usr/local/bin/restart
+RUN chmod +x /usr/local/bin/restart
 
 # Install dependencies
 COPY requirements.txt /code/requirements.txt
 RUN pip3 install -r requirements.txt
 
-EXPOSE 6132
+EXPOSE 8000
 
-CMD ["tail", "-f", "/dev/null"]
+CMD ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
