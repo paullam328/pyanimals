@@ -23,7 +23,7 @@ class AnimalService(BaseService):
     async def get_all_animal_details(self, pages_to_fetch: int = -1, page_to_fetch_multiplier: int = -1):
         total_pages = self.get_total_pages()
         start = time.time()
-        starting_page = page_to_fetch_multiplier * pages_to_fetch
+        starting_page = page_to_fetch_multiplier * pages_to_fetch - pages_to_fetch + 1
         num_pages = min(total_pages, starting_page + pages_to_fetch) if pages_to_fetch > -1 else total_pages
         all_animals = await self.animal_api.get_all_details_async(num_pages, starting_page, pages_to_fetch)
         print("Total animal details fetching time: " + str(time.time() - start))
