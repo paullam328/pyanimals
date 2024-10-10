@@ -1,8 +1,7 @@
-import math
-import time
 from . import BaseService
 from ..api.animals import AnimalsAPI
-from ..utils.exceptions import DataNotExistException
+from ..utils.exceptions import DataNotExistException, ExceedBatchLimitException
+from ..utils.constants import MAX_BATCH_SIZE
 
 class AnimalService(BaseService):
     animal_api = AnimalsAPI()
@@ -20,20 +19,15 @@ class AnimalService(BaseService):
         else:
             raise DataNotExistException("Total pages data does not exist.")
 
-    async def get_all_animal_details(self, pages_to_fetch: int = -1, page_to_fetch_multiplier: int = -1):
+    async def get_all_animal_details(self, pages_to_fetch: int = -1, pagination: int = -1):
         total_pages = self.get_total_pages()
-        start = time.time()
-        starting_page = page_to_fetch_multiplier * pages_to_fetch - pages_to_fetch + 1
+        starting_page = pagination * pages_to_fetch - pages_to_fetch + 1
         num_pages = min(total_pages, starting_page + pages_to_fetch) if pages_to_fetch > -1 else total_pages
         all_animals = await self.animal_api.get_all_details_async(num_pages, starting_page, pages_to_fetch)
-        print("Total animal details fetching time: " + str(time.time() - start))
         return all_animals
 
-    def create_animal_homes(self):
-        pass
-
-    def update(self, title, msg, expiry_date, level):
-        raise NotImplementedError
-
-    def remove(self, id):
-        raise NotImplementedError
+    def create_animal_homes(self, req):
+        if len(req) > MAX_BATCH_SIZE:
+            raise ExceedBatchLimitException(MAX_BATCH_SIZE)
+        res = self.animal_api.create_home(req)
+        return res

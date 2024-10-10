@@ -1,1 +1,2 @@
-MAX_WORKERS = 10 # Manages the bottleneck of the I/O bound workers
+MAX_BATCH_SIZE = 100
+ATTEMPTS_BEFORE_API_HANGS = 5

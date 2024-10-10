@@ -1,16 +1,16 @@
 import aiohttp
 import asyncio
 import requests
-from tenacity import retry, stop_after_attempt, wait_random
+from tenacity import retry, stop_after_attempt
 from ..mappers.animals import AnimalMapper
-from ..utils.constants import MAX_WORKERS
+from ..schemas.animals import PostAnimalRequest
+from ..utils.constants import ATTEMPTS_BEFORE_API_HANGS
 from . import BaseAPI
 
 class AnimalsAPI(BaseAPI):
 
     def __init__(self):
         super().__init__()
-        self.max_workers = MAX_WORKERS
 
     async def get(self, id: int, session: aiohttp.ClientSession):
         url = self.url + "/animals?id={0}".format(id)
@@ -28,15 +28,10 @@ class AnimalsAPI(BaseAPI):
             get_all_tasks.append(session.get(url, ssl=False))
         return get_all_tasks
 
-    @retry(
-        stop=stop_after_attempt(5),
-        # wait=wait_random(min=1, max=5),
-        # retry=(lambda r: r.status in [500, 502, 503, 504])
-    )
+    @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS))
     async def get_all_async(self, total_pages: int, starting_page: int, pages_to_fetch: int):
         res = []
         async with aiohttp.ClientSession() as session:
-            print(pages_to_fetch)
             tasks = self.get_all_tasks(total_pages, starting_page, pages_to_fetch, session)
             resps = await asyncio.gather(*tasks)
             for resp in resps:
@@ -46,11 +41,7 @@ class AnimalsAPI(BaseAPI):
                         res.extend(data["items"])
         return res
 
-    @retry(
-        stop=stop_after_attempt(5),
-        wait=wait_random(min=1, max=5),
-        # retry=(lambda r: r.status in [500, 502, 503, 504])
-    )
+    @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS))
     def get_all_sync(self, page: int):
         url = self.url + "/animals?page={0}".format(page)
         return requests.get(url).json()
@@ -75,5 +66,10 @@ class AnimalsAPI(BaseAPI):
                     res.append(AnimalMapper.map_resp_to_output(data))
         return res
 
-    def create_home(self, payload):
-        raise NotImplementedError
+    def create_home(self, payload: PostAnimalRequest):
+        url = self.url + "/home"
+        payload_dicts = [item.dict() for item in payload]
+        resp = requests.post(url, json=payload_dicts)
+        resp.raise_for_status()
+        data = resp.json()
+        return data
