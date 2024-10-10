@@ -2,10 +2,6 @@ FROM python:3.12-alpine
 
 WORKDIR /code
 
-# For development purposes
-COPY restart /usr/local/bin/restart
-RUN chmod +x /usr/local/bin/restart
-
 # Install dependencies
 COPY requirements.txt /code/requirements.txt
 RUN pip3 install -r requirements.txt

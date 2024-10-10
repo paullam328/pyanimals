@@ -1,2 +1,0 @@
-class BaseSchema(object):
-    pass

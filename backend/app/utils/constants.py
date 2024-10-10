@@ -1,0 +1,1 @@
+MAX_WORKERS = 10 # Manages the bottleneck of the I/O bound workers

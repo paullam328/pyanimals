@@ -8,8 +8,7 @@ services:
     image: leadpages_python_coding_challenge
     environment:
       - APP_ENV=prod
-      - EXTERNAL_API_SERVER_URL=http://localhost:3123/api/v1
-    volumes:
-      - ./backend/app:/code/app
+      - EXTERNAL_API_SERVER_URL=http://localhost:3123/animals/v1
+    network_mode: "host" # essentially not the best practice for production app, but done due to time constraints + just for demo purposes
     ports:
       - 8000:8000

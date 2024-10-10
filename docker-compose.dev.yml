@@ -11,8 +11,9 @@ services:
     environment:
       - DD_SHOWS_ROOT=/dd/shows
       - APP_ENV=dev
-      - EXTERNAL_API_SERVER_URL=http://localhost:3123/api/v1
+      - EXTERNAL_API_SERVER_URL=http://localhost:3123/animals/v1
     volumes:
       - ./backend/app:/code/app
+    network_mode: "host" # essentially not the best practice for production app, but done due to time constraints + just for demo purposes
     ports:
       - 8000:8000
