@@ -3,7 +3,7 @@
 An app to explore animals and get to know their friends
 
 ## How to deploy
-1. Make sure the external API is running at http://localhost:3123/ first  
+1. Make sure the lp-programming-challenge-1 API server is running at http://localhost:3123/ first  
 2. cd to this project's root directory
 3. docker-compose build
 4. docker-compose up (docker-compose up -d if you prefer detached mode)
