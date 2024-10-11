@@ -1,3 +1,4 @@
+# Production deployment
 version: '3.9'
 
 services:
@@ -5,9 +6,10 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    image: leadpages_python_coding_challenge
+    image: pyanimals
     environment:
       - APP_ENV=prod
+      - APP_VERSION=0.1.0
       - EXTERNAL_API_SERVER_URL=http://localhost:3123/animals/v1
     network_mode: "host" # essentially not the best practice for production app, but done due to time constraints + just for demo purposes
     ports:

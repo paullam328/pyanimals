@@ -2,6 +2,7 @@ import os
 from typing import OrderedDict
 from fastapi import APIRouter, status
 
+# Router Utilities for handling success and failed responses
 class RouterUtils(object):
     @staticmethod
     def handle_success_response(res, code=status.HTTP_200_OK):
@@ -22,6 +23,7 @@ class RouterUtils(object):
 
 root_router = APIRouter()
 
+# Base router
 @root_router.get("/", tags=["index"])
 async def get():
     try:

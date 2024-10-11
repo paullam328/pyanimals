@@ -1,3 +1,4 @@
+# Dev deployment
 version: '3.9'
 
 services:
@@ -7,10 +8,11 @@ services:
       dockerfile: ./Dockerfile.dev
       args:
         options: --reload
-    image: leadpages_python_coding_challenge_dev
+    image: pyanimals_dev
     environment:
       - DD_SHOWS_ROOT=/dd/shows
       - APP_ENV=dev
+      - APP_VERSION=0.1.0
       - EXTERNAL_API_SERVER_URL=http://localhost:3123/animals/v1
     volumes:
       - ./backend/app:/code/app

@@ -1,5 +1,6 @@
 from ..config import EXTERNAL_API_SERVER_URL
 
+# Base API class
 class BaseAPI(object):
 
     def __init__(self):

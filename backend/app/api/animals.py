@@ -4,22 +4,20 @@ import requests
 from tenacity import retry, stop_after_attempt
 from ..mappers.animals import AnimalMapper
 from ..schemas.animals import PostAnimalRequest
-from ..utils.constants import ATTEMPTS_BEFORE_API_HANGS
+from ..utils.constants import ATTEMPTS_BEFORE_API_HANGS, NOT_SUPPLIED
 from . import BaseAPI
 
+# External API class for Animals
 class AnimalsAPI(BaseAPI):
 
     def __init__(self):
         super().__init__()
 
-    async def get(self, id: int, session: aiohttp.ClientSession):
-        url = self.url + "/animals?id={0}".format(id)
-        async with session.get(url) as resp:
-            return await resp.json()
-
+    # generates a list of async tasks to fetch animal data with an option to set starting page and # pages to fetch
+    # returns tasks as a list, and will be awaited later for further operations
     def get_all_tasks(self, total_pages: int, starting_page: int, pages_to_fetch: int, session: aiohttp.ClientSession): # there are 500 pages, so without using async it would be very, very slow
         get_all_tasks = []
-        if starting_page > -1 and pages_to_fetch > -1:
+        if starting_page > NOT_SUPPLIED and pages_to_fetch > NOT_SUPPLIED:
             pages_to_fetch_range = range(starting_page, starting_page + pages_to_fetch)
         else:
             pages_to_fetch_range = range(0, total_pages)
@@ -28,6 +26,9 @@ class AnimalsAPI(BaseAPI):
             get_all_tasks.append(session.get(url, ssl=False))
         return get_all_tasks
 
+    # get all animals optimized by aiohttp and asyncio, can optionally set pagination
+    # within the session the asyncio.gether executes all the tasks concurrently
+    # returns a list of all animals if response status is 200
     @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS))
     async def get_all_async(self, total_pages: int, starting_page: int, pages_to_fetch: int):
         res = []
@@ -41,11 +42,14 @@ class AnimalsAPI(BaseAPI):
                         res.extend(data["items"])
         return res
 
+    # synchronous method for getting all the animals
     @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS))
     def get_all_sync(self, page: int):
         url = self.url + "/animals?page={0}".format(page)
         return requests.get(url).json()
     
+    # generates a list of async tasks to fetch animal details provided a list of animals
+    # returns tasks as a list, and will be awaited later for further operations
     def get_all_details_task(self, animals, session: aiohttp.ClientSession): # there are 500 pages, so without using async it would be very, very slow
         tasks = []
         for animal in animals:
@@ -54,8 +58,11 @@ class AnimalsAPI(BaseAPI):
                 tasks.append(session.get(url, ssl=False))
         return tasks
 
+    # get all animals details optimized by aiohttp and asyncio, can optionally set pagination
+    # within the session the asyncio.gether executes all the tasks concurrently
+    # returns a list of all animals if response status is 200
     async def get_all_details_async(self, pages, starting_page, pages_to_fetch):
-        animals = await self.get_all_async(pages, starting_page, pages_to_fetch)
+        animals = await self.get_all_async(pages, starting_page, pages_to_fetch) # get all the animals first, then loop over those to fetch the detail of each one
         res = []
         async with aiohttp.ClientSession() as session:
             tasks = self.get_all_details_task(animals, session)
@@ -66,6 +73,7 @@ class AnimalsAPI(BaseAPI):
                     res.append(AnimalMapper.map_resp_to_output(data))
         return res
 
+    # create animal home provided the request payload
     def create_home(self, payload: PostAnimalRequest):
         url = self.url + "/home"
         payload_dicts = [item.dict() for item in payload]

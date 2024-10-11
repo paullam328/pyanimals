@@ -1,6 +1,8 @@
 import datetime
 
 class AnimalMapper(object):
+
+    # Mapper to map response object returned by the external API to output response object
     @staticmethod
     def map_resp_to_output(resp):
         resp["friends"] = resp["friends"].split(",") if "friends" in resp else None
