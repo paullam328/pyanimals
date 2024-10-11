@@ -28,7 +28,7 @@ root_router = APIRouter()
 async def get():
     try:
         dict = OrderedDict()
-        dict["name"] = "Leadpages python coding challenge"
+        dict["name"] = "Animal browser"
         dict["version"] = os.environ['APP_VERSION'] if 'APP_VERSION' in os.environ else "undefined"
         dict["env"] = "production" if os.environ['APP_ENV'] == "prod" else "development"
         return RouterUtils.handle_success_response(dict)

@@ -3,7 +3,7 @@ FROM python:3.12-alpine
 WORKDIR /code
 
 # Copy the project over
-COPY ./backend /code
+COPY ./app /code/app
 
 # Install dependencies
 COPY requirements.txt /code/requirements.txt

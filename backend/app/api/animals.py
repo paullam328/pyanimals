@@ -29,7 +29,7 @@ class AnimalsAPI(BaseAPI):
     # get all animals optimized by aiohttp and asyncio, can optionally set pagination
     # within the session the asyncio.gether executes all the tasks concurrently
     # returns a list of all animals if response status is 200
-    @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS))
+    @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS)) # retries just in case the server randomly return 500 error
     async def get_all_async(self, total_pages: int, starting_page: int, pages_to_fetch: int):
         res = []
         async with aiohttp.ClientSession() as session:
@@ -43,7 +43,7 @@ class AnimalsAPI(BaseAPI):
         return res
 
     # synchronous method for getting all the animals
-    @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS))
+    @retry(stop=stop_after_attempt(ATTEMPTS_BEFORE_API_HANGS)) # retries just in case the server randomly return 500 error
     def get_all_sync(self, page: int):
         url = self.url + "/animals?page={0}".format(page)
         return requests.get(url).json()
