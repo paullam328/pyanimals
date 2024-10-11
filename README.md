@@ -1,15 +1,15 @@
-## pyanimals
+# pyanimals
 
 An app to explore animals and get to know their friends
 
-# How to deploy
+## How to deploy
 1. Make sure the external API is running at http://localhost:3123/ first  
 2. cd to this project's root directory
 3. docker-compose build
 4. docker-compose up (docker-compose up -d if you prefer detached mode)
 5. Enjoy! It is located at http://localhost:8000 so please ensure that port 8000 is not occupied
 
-# Core Features
+## Core Features
 
 Swagger here: http://localhost:8000/docs, feel free to test out the APIs on Swagger
 
